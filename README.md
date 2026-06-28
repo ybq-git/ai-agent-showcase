@@ -1,1 +1,3 @@
-# ai-agent-showcase
+# 我的AI Agent作品集
+目标：深圳AI Agent应用开发工程师
+开始日期：2026.06.28
