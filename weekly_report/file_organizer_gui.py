@@ -5,28 +5,9 @@
 # 函数并弹出“整理完成！”消息框）。
 # 请生成完整的 GUI 代码。
 
-import os
-import shutil
 import tkinter as tk
 from tkinter import filedialog, messagebox
-
-
-def organize_by_extension(target_path):
-    """按文件扩展名整理目标文件夹中的文件。"""
-    if not target_path or not os.path.isdir(target_path):
-        return "错误：请选择有效的文件夹"
-
-    moved_count = 0
-    for filename in os.listdir(target_path):
-        file_path = os.path.join(target_path, filename)
-        if os.path.isfile(file_path):
-            ext = os.path.splitext(filename)[1].lower().lstrip(".") or "其他"
-            dest_dir = os.path.join(target_path, ext)
-            os.makedirs(dest_dir, exist_ok=True)
-            shutil.move(file_path, os.path.join(dest_dir, filename))
-            moved_count += 1
-
-    return f"整理完成！共移动 {moved_count} 个文件。"
+from file_organizer import organize_by_extension
 
 
 def browse_folder():
