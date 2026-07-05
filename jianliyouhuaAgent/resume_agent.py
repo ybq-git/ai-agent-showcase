@@ -2,7 +2,12 @@
 简历优化Agent：接收用户简单经历，输出STAR法则版简历片段（JSON）
 """
 import json
+from pathlib import Path
+
 from test_qwen import call_qwen
+
+# 脚本所在目录，作为项目根目录（不依赖当前工作目录）
+BASE_DIR = Path(__file__).parent
 
 # 提示词模板（从设计文件中提取并固定）
 RESUME_PROMPT_TEMPLATE = """
@@ -43,8 +48,9 @@ def optimize_resume(experience_text: str) -> dict:
         return {"error": "JSON解析失败", "raw": response}
 
 if __name__ == "__main__":
-    # 读取本地简历草稿文件
-    with open("my_resume.txt", "r", encoding="utf-8") as f:
+    # 读取本地简历草稿文件（始终相对脚本所在目录）
+    resume_path = BASE_DIR / "my_resume.txt"
+    with open(resume_path, "r", encoding="utf-8") as f:
         raw_text = f.read()
 
     print("原简历内容：\n", raw_text)
@@ -57,6 +63,7 @@ if __name__ == "__main__":
     else:
         print(json.dumps(result, ensure_ascii=False, indent=2))
         # 可以进一步保存到文件
-        with open("resume_optimized.json", "w", encoding="utf-8") as out:
+        output_path = BASE_DIR / "resume_optimized.json"
+        with open(output_path, "w", encoding="utf-8") as out:
             json.dump(result, out, ensure_ascii=False, indent=2)
-print("\n优化结果已保存到 resume_optimized.json")
+        print("\n优化结果已保存到 resume_optimized.json")
