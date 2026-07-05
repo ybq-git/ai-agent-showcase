@@ -4,8 +4,8 @@
 # （点击后弹出文件夹选择对话框），一个“开始整理”按钮（点击后调用 organize_by_extension
 # 函数并弹出“整理完成！”消息框）。
 # 请生成完整的 GUI 代码。
-
-import tkinter as tk                      # 导入 tkinter 模块，并简写为 tk，用于创建 GUI 界面
+ # 导入 tkinter 模块，并简写为 tk，用于创建 GUI 界面
+import tkinter as tk                     
 from tkinter import filedialog, messagebox # 从 tkinter 中导入文件对话框和消息提示框组件
 from file_organizer import organize_by_extension  # 从 file_organizer 模块导入按扩展名整理文件的函数
 
