@@ -15,6 +15,7 @@ def call_qwen(prompt_text):
         model='qwen-max',
         prompt=prompt_text,
         api_key=api_key
+        
     )
     if response.status_code == 200:
         return response.output.text
