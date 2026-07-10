@@ -10,3 +10,4 @@
 - 天气穿衣建议Agent（带记忆）
 - RAG政策问答Agent
 - 招聘信息聚合分析看板
+- 私人厨师智能食谱推荐系统（Streamlit + LangChain + Qwen）
