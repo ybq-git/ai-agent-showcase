@@ -2,11 +2,20 @@ import os, httpx, json
 from typing import TypedDict, List
 from langgraph.graph import StateGraph, END
 from langchain_community.chat_models import ChatTongyi
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.messages import HumanMessage
 from dotenv import load_dotenv
 
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
-llm = ChatTongyi(model="qwen-max", dashscope_api_key=os.getenv("DASHSCOPE_API_KEY"))
+
+def get_llm():
+    api_key = os.getenv("DASHSCOPE_API_KEY")
+    if not api_key:
+        try:
+            import streamlit as st
+            api_key = st.secrets["DASHSCOPE_API_KEY"]
+        except Exception:
+            pass
+    return ChatTongyi(model="qwen-max", dashscope_api_key=api_key or "")
 
 class WeatherState(TypedDict):
     city: str
@@ -17,6 +26,12 @@ class WeatherState(TypedDict):
 def fetch_weather(state: WeatherState):
     """节点1：调用高德天气API获取实时天气"""
     key = os.getenv("AMAP_KEY")
+    if not key:
+        try:
+            import streamlit as st
+            key = st.secrets["AMAP_KEY"]
+        except Exception:
+            pass
     city = state["city"]
     url = f"https://restapi.amap.com/v3/weather/weatherInfo?key={key}&city={city}&extensions=base"
     try:
@@ -34,7 +49,7 @@ def generate_suggestion(state: WeatherState):
     当前天气数据如下（JSON）：{state['weather_data']}
     请用中文给出简洁的穿衣建议和是否带伞提示。
     """
-    ai_msg = llm.invoke([HumanMessage(content=prompt)])
+    ai_msg = get_llm().invoke([HumanMessage(content=prompt)])
     state["suggestion"] = ai_msg.content
     state["history"].append(f"{state['city']}: {state['suggestion'][:50]}...")
     return state
