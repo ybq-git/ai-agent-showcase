@@ -4,7 +4,7 @@ from weather_agent import agent, WeatherState  # 导入昨天的agent
 st.set_page_config(page_title="AI穿衣助手", page_icon="☀️")
 st.title("👔 AI穿衣建议助手")
 
-city = st.text_input("请输入城市名称（如：南昌）", value="")
+city = st.text_input("请输入城市名称（如：北京市）", value="")
 
 if st.button("获取今日穿搭建议"):
     if not city.strip():
