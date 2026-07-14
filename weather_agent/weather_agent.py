@@ -15,7 +15,9 @@ def get_llm():
             api_key = st.secrets["DASHSCOPE_API_KEY"]
         except Exception:
             pass
-    return ChatTongyi(model="qwen-max", dashscope_api_key=api_key or "")
+    if not api_key:
+        raise RuntimeError("未配置 DASHSCOPE_API_KEY，请在 Streamlit Cloud Secrets 或 .env 中设置")
+    return ChatTongyi(model="qwen-max", dashscope_api_key=api_key)
 
 class WeatherState(TypedDict):
     city: str
