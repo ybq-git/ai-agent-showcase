@@ -19,9 +19,13 @@ def fetch_weather(state: WeatherState):
     key = os.getenv("AMAP_KEY")
     city = state["city"]
     url = f"https://restapi.amap.com/v3/weather/weatherInfo?key={key}&city={city}&extensions=base"
-    resp = httpx.get(url)
-    data = resp.json()
-    state["weather_data"] = json.dumps(data, ensure_ascii=False)
+    try:
+        resp = httpx.get(url, timeout=10.0)
+        resp.raise_for_status()
+        data = resp.json()
+        state["weather_data"] = json.dumps(data, ensure_ascii=False)
+    except Exception as e:
+        state["weather_data"] = json.dumps({"error": f"天气API调用失败: {e}"}, ensure_ascii=False)
     return state
 
 def generate_suggestion(state: WeatherState):
@@ -46,7 +50,7 @@ builder.add_edge("suggest", END)
 agent = builder.compile()
 
 if __name__ == "__main__":
-    init_state = {"city": "深圳", "weather_data": "", "suggestion": "", "history": []}
+    init_state = {"city": "吉安", "weather_data": "", "suggestion": "", "history": []}
     result = agent.invoke(init_state)
     print("穿衣建议：", result["suggestion"])
     print("历史记录：", result["history"])
