@@ -7,7 +7,7 @@
 - 文件自动归类工具（GUI）
 -  Copilot高级技巧练习笔记，提交推送
 - 简历优化Agent
-- 天气穿衣建议Agent（带记忆）
+- 天气穿衣建议Agent（带记忆）：https://ai-agent-showcase-dihml9trhspmktnnmoqsxy.streamlit.app/
 - RAG政策问答Agent
 - 招聘信息聚合分析看板
 - 私人厨师智能食谱推荐系统（Streamlit + LangChain + Qwen）
