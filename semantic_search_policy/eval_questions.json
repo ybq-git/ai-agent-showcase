@@ -1,0 +1,14 @@
+[
+  {
+    "question": "深圳应届本科生租房补贴标准是多少？",
+    "expected_keywords": ["1.5万", "15000"]
+  },
+  {
+    "question": "深圳人工智能人才奖励最高多少？",
+    "expected_keywords": ["50万"]
+  },
+  {
+    "question": "深圳公积金贷款利率是多少？",
+    "expected_keywords": ["不知道", "文档未提及"]
+  }
+]
