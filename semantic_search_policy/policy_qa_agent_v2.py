@@ -7,8 +7,6 @@
 """
 import os
 
-# ---------- 修复：国内网络使用 HF 镜像，必须在 import embeddings 前设置 ----------
-os.environ.setdefault("HF_ENDPOINT", "https://hf-mirror.com")
 
 from langchain_classic.chains import RetrievalQA
 from langchain_classic.prompts import PromptTemplate
