@@ -1,10 +1,13 @@
+from functools import lru_cache
+import os
+from dotenv import load_dotenv
 import os, httpx, json
 from typing import TypedDict, List
 from langgraph.graph import StateGraph, END
 from langchain_community.chat_models import ChatTongyi
 from langchain_core.messages import HumanMessage
 from dotenv import load_dotenv
-
+load_dotenv()
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
 
 def get_llm():
@@ -45,14 +48,25 @@ def fetch_weather(state: WeatherState):
         state["weather_data"] = json.dumps({"error": f"天气API调用失败: {e}"}, ensure_ascii=False)
     return state
 
-def generate_suggestion(state: WeatherState):
-    """节点2：用千问根据天气数据生成穿扮建议"""
+@lru_cache(maxsize=128)
+def _cached_suggestion(weather_data: str):
+    """生成穿衣建议（带缓存）。
+
+    注意：LLM 输出本质非确定性（temperature > 0），同一天气数据可能产生不同建议。
+    此缓存仅用于演示优化思想——减少重复 API 调用。生产环境中建议按天气数据
+    哈希 + 时间窗口设置较短 TTL，而非无过期缓存。
+    """
     prompt = f"""
-    当前天气数据如下（JSON）：{state['weather_data']}
+    当前天气数据如下（JSON）：{weather_data}
     请用中文给出简洁的穿衣建议和是否带伞提示。
     """
     ai_msg = get_llm().invoke([HumanMessage(content=prompt)])
-    state["suggestion"] = ai_msg.content
+    return ai_msg.content
+
+
+def generate_suggestion(state: WeatherState):
+    """节点2：用千问根据天气数据生成穿扮建议"""
+    state["suggestion"] = _cached_suggestion(state["weather_data"])
     state["history"].append(f"{state['city']}: {state['suggestion'][:50]}...")
     return state
 
