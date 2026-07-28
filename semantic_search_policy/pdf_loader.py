@@ -16,6 +16,15 @@ def split_text(text, chunk_size=500, overlap=50):
     return chunks
 
 
+def extract_pdf_to_text(pdf_input):
+    """提取PDF文件的全部文本。pdf_input 可以是文件路径(str)或bytes。"""
+    with fitz.open(pdf_input) if isinstance(pdf_input, str) else fitz.open(stream=pdf_input, filetype="pdf") as doc:
+        text = ""
+        for page in doc:
+            text += page.get_text()
+    return text
+
+
 def extract_pdfs(pdf_folder, output_folder):
     os.makedirs(pdf_folder, exist_ok=True)
     os.makedirs(output_folder, exist_ok=True)
