@@ -1,0 +1,9 @@
+streamlit>=1.30
+langgraph
+langchain
+langchain-community
+pydantic
+dashscope
+python-dotenv
+fastapi
+uvicorn
