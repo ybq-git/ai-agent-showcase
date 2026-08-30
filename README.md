@@ -2,7 +2,7 @@
 
 **目标岗位**：深圳 AI Agent 应用开发工程师
 
-我从零自学 AI Agent，下面是手写的 5 个项目。每个项目都有 README（怎么跑、技术点、我踩过的坑/评测数据），你能看到我从"调用 API"到"自己编排智能体"的完整成长线。
+我从零自学 AI Agent，下面是手写的 6 个项目。每个项目都有 README（怎么跑、技术点、我踩过的坑/评测数据），你能看到我从"调用 API"到"自己编排智能体"的完整成长线。
 
 ## 项目清单
 
@@ -25,6 +25,10 @@ LangGraph 双节点工作流：高德天气 API 取实时天气 → 通义千问
 ### 5. 简历优化生成器 [`resume_builder/`](./resume_builder/)
 
 LLM 应用：解析 PDF/TXT 简历 → qwen 按 STAR 法则优化 + 提取技能词 → 套本地 Word 模板 AI 逐段填槽 → 输出 `.docx`，带多级 fallback。
+
+### 6. 简历分析 Agent [`resume_analyst_agent/`](./resume_analyst_agent/)
+
+LangGraph 双节点工作流：分析简历弱点 → 推荐针对性学习资源。推荐节点先让 LLM 生成检索关键词，再用 DuckDuckGo 搜**真实资源链接**；网络不可用时自动回退到纯模型生成，做到健壮不崩。
 
 ---
 
