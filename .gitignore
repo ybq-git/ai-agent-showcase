@@ -8,3 +8,13 @@ resources/
 *.sqlite3
 *.bin
 chroma_db/
+
+# 个人文件 / 参考项目，不进仓库
+ai_interview_assistant/
+ecom-agent/
+reference_springai_agent/
+resume/
+_preview/
+.vscode/
+AI_Agent_开发工程师_*
+*简历*
