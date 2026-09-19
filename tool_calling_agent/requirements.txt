@@ -1,0 +1,9 @@
+httpx
+langchain
+langchain-community
+langchain-core
+dashscope
+python-dotenv
+streamlit
+duckduckgo-search
+ddgs
