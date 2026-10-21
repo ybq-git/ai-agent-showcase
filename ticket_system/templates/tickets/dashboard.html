@@ -1,0 +1,53 @@
+{% extends "tickets/base.html" %}
+{% block title %}统计看板 · 工单管理系统{% endblock %}
+{% block content %}
+<h4 class="mb-3">统计看板</h4>
+<div class="row g-3 mb-3">
+  <div class="col-6 col-lg-3"><div class="card p-3"><div class="text-muted small">待处理</div><div class="fs-3 fw-semibold">{{ stats.open }}</div></div></div>
+  <div class="col-6 col-lg-3"><div class="card p-3"><div class="text-muted small">处理中</div><div class="fs-3 fw-semibold text-primary">{{ stats.in_progress }}</div></div></div>
+  <div class="col-6 col-lg-3"><div class="card p-3"><div class="text-muted small">已解决</div><div class="fs-3 fw-semibold text-success">{{ stats.resolved }}</div></div></div>
+  <div class="col-6 col-lg-3"><div class="card p-3"><div class="text-muted small">已关闭</div><div class="fs-3 fw-semibold text-secondary">{{ stats.closed }}</div></div></div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="text-muted mb-3">近 7 天新建工单</h6>
+        <canvas id="dailyChart" height="120"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card h-100">
+      <div class="card-body d-flex flex-column justify-content-center">
+        <div class="text-muted small mb-1">平均解决时长</div>
+        <div class="display-6 fw-semibold">{{ stats.avg_hours }} <span class="fs-5 text-muted">小时</span></div>
+        <div class="text-muted small mt-2">基于已解决工单的创建时间与解决时间</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{ stats.chart_labels|json_script:"chart-labels" }}
+{{ stats.chart_data|json_script:"chart-data" }}
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+  const labels = JSON.parse(document.getElementById('chart-labels').textContent);
+  const data = JSON.parse(document.getElementById('chart-data').textContent);
+  new Chart(document.getElementById('dailyChart'), {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{ label: '新建工单', data: data, backgroundColor: '#0d6efd', borderRadius: 4 }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+    }
+  });
+</script>
+{% endblock %}

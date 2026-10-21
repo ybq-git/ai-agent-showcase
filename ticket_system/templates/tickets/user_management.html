@@ -1,0 +1,47 @@
+{% extends "tickets/base.html" %}
+{% block title %}用户管理 · 工单管理系统{% endblock %}
+{% block content %}
+<h4 class="mb-3">用户管理</h4>
+<div class="card">
+  <div class="table-responsive">
+    <table class="table align-middle mb-0">
+      <thead class="table-light">
+        <tr><th>用户名</th><th>邮箱</th><th>角色</th><th>状态</th><th style="width: 240px;">操作</th></tr>
+      </thead>
+      <tbody>
+      {% for u in users %}
+        <tr>
+          <td>{{ u.username }}{% if u == request.user %} <span class="badge bg-secondary">我</span>{% endif %}</td>
+          <td class="text-muted">{{ u.email|default:"—" }}</td>
+          <td>
+            <form method="post" action="{% url 'change_role' u.id %}" class="d-flex gap-2">
+              {% csrf_token %}
+              <select name="role" class="form-select form-select-sm" style="width: 120px;">
+                <option value="employee" {% if u.profile.role == 'employee' %}selected{% endif %}>员工</option>
+                <option value="agent" {% if u.profile.role == 'agent' %}selected{% endif %}>处理人</option>
+                <option value="admin" {% if u.profile.role == 'admin' %}selected{% endif %}>管理员</option>
+              </select>
+              <button class="btn btn-outline-primary btn-sm" type="submit">保存</button>
+            </form>
+          </td>
+          <td>{% if u.is_active %}<span class="badge bg-success">启用</span>{% else %}<span class="badge bg-secondary">禁用</span>{% endif %}</td>
+          <td>
+            {% if u != request.user %}
+            <form method="post" action="{% url 'toggle_user' u.id %}">
+              {% csrf_token %}
+              <button class="btn btn-outline-{% if u.is_active %}danger{% else %}success{% endif %} btn-sm" type="submit">
+                {% if u.is_active %}禁用{% else %}启用{% endif %}
+              </button>
+            </form>
+            {% else %}
+              <span class="text-muted small">—</span>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<p class="text-muted small mt-3">新增用户请使用 Django Admin（<a href="/admin/" target="_blank">/admin/</a>）。</p>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "tickets/base.html" %}
+{% block title %}{{ title }} · 工单管理系统{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-body p-4">
+        <h4 class="mb-3">{{ title }}</h4>
+        <form method="post">
+          {% csrf_token %}
+          {% for field in form %}
+            <div class="mb-3">
+              <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {{ field }}
+              {% if field.errors %}
+                <div class="text-danger small mt-1">{{ field.errors|striptags }}</div>
+              {% endif %}
+            </div>
+          {% endfor %}
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary" type="submit">保存</button>
+            <a class="btn btn-outline-secondary" href="{% url 'ticket_list' %}">取消</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}工单管理系统{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background: #f6f7f9; }
+    .navbar-brand { letter-spacing: .5px; }
+    .card { border: 0; box-shadow: 0 1px 3px rgba(20, 30, 50, .08); }
+    .badge-status-open { background: #fff3cd; color: #664d03; }
+    .badge-status-in_progress { background: #cfe2ff; color: #084298; }
+    .badge-status-resolved { background: #d1e7dd; color: #0f5132; }
+    .badge-status-closed { background: #e2e3e5; color: #41464b; }
+    .timeline { list-style: none; padding-left: 0; }
+    .timeline li { border-left: 2px solid #dee2e6; padding: 0 0 14px 16px; position: relative; }
+    .timeline li::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: #0d6efd; position: absolute; left: -5.5px; top: 5px; }
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'ticket_list' %}">工单管理系统</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="nav">
+      {% if user.is_authenticated %}
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link" href="{% url 'ticket_list' %}">工单列表</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'ticket_create' %}">新建工单</a></li>
+        {% if user.profile.is_agent %}
+        <li class="nav-item"><a class="nav-link" href="{% url 'dashboard' %}">统计看板</a></li>
+        {% endif %}
+        {% if user.profile.is_admin %}
+        <li class="nav-item"><a class="nav-link" href="{% url 'user_management' %}">用户管理</a></li>
+        {% endif %}
+      </ul>
+      <span class="navbar-text text-white-50 me-3">
+        {{ user.username }} · {{ user.profile.get_role_display }}
+      </span>
+      <a class="btn btn-outline-light btn-sm" href="{% url 'logout' %}">退出</a>
+      {% endif %}
+    </div>
+  </div>
+</nav>
+
+<div class="container py-4">
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags|default:'info' }}{% endif %} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+  {% block content %}{% endblock %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

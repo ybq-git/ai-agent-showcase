@@ -1,0 +1,90 @@
+{% extends "tickets/base.html" %}
+{% block title %}工单列表 · 工单管理系统{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h4 class="mb-0">工单列表</h4>
+    <small class="text-muted">共 {{ page_obj.paginator.count }} 条</small>
+  </div>
+  <a class="btn btn-primary" href="{% url 'ticket_create' %}">新建工单</a>
+</div>
+
+<form class="card p-3 mb-3" method="get">
+  <div class="row g-2 align-items-end">
+    <div class="col-md-4">
+      <label class="form-label small text-muted">关键词</label>
+      <input type="text" name="q" value="{{ filters.q }}" class="form-control" placeholder="标题或描述">
+    </div>
+    <div class="col-md-3">
+      <label class="form-label small text-muted">状态</label>
+      <select name="status" class="form-select">
+        <option value="">全部</option>
+        {% for value, label in statuses %}
+          <option value="{{ value }}" {% if filters.status == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label small text-muted">优先级</label>
+      <select name="priority" class="form-select">
+        <option value="">全部</option>
+        {% for value, label in priorities %}
+          <option value="{{ value }}" {% if filters.priority == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2 d-grid">
+      <button class="btn btn-outline-primary" type="submit">筛选</button>
+    </div>
+  </div>
+</form>
+
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>#</th>
+          <th>标题</th>
+          <th>分类</th>
+          <th>优先级</th>
+          <th>状态</th>
+          <th>提交人</th>
+          <th>处理人</th>
+          <th>创建时间</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for ticket in page_obj %}
+        <tr>
+          <td>{{ ticket.pk }}</td>
+          <td><a href="{% url 'ticket_detail' ticket.pk %}" class="text-decoration-none">{{ ticket.title }}</a></td>
+          <td>{{ ticket.category.name }}</td>
+          <td>{{ ticket.get_priority_display }}</td>
+          <td><span class="badge badge-status-{{ ticket.status }}">{{ ticket.get_status_display }}</span></td>
+          <td>{{ ticket.created_by.username }}</td>
+          <td>{{ ticket.assigned_to.username|default:"未指派" }}</td>
+          <td class="text-muted small">{{ ticket.created_at|date:"Y-m-d H:i" }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="8" class="text-center text-muted py-4">暂无工单</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% if page_obj.has_other_pages %}
+<nav class="mt-3">
+  <ul class="pagination justify-content-center">
+    {% if page_obj.has_previous %}
+      <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&status={{ filters.status }}&priority={{ filters.priority }}&q={{ filters.q }}">上一页</a></li>
+    {% endif %}
+    <li class="page-item disabled"><span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span></li>
+    {% if page_obj.has_next %}
+      <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&status={{ filters.status }}&priority={{ filters.priority }}&q={{ filters.q }}">下一页</a></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
+{% endblock %}
